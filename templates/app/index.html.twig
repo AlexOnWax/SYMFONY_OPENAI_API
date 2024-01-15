@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AppController!{% endblock %}
+
+{% block body %}
+    {{form_start(form)}}
+    {{ form_end(form) }}
+    <hr>
+
+   {% for message in messages %}
+        <p>{{ message }}</p>
+     {% endfor %}
+
+{% endblock %}
