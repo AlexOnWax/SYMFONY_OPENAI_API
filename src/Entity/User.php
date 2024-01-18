@@ -33,6 +33,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    #[ORM\Column]
+    private ?bool $paiement = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -111,6 +114,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function isPaiement(): ?bool
+    {
+        return $this->paiement;
+    }
+
+    public function setPaiement(bool $paiement): static
+    {
+        $this->paiement = $paiement;
 
         return $this;
     }

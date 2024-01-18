@@ -17,23 +17,28 @@ class AppController extends AbstractController
 {
     #[Route('/app', name: 'app_app')]
     public function index(Request $request, EntityManagerInterface $em, ResultsRepository $resultsRepository, GptApi $gptApi): Response
-    {   
-        $messages = $resultsRepository->findAll();
-        $content = new Results();
-        $form = $this->createForm(ProCreateType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $data= $form->getData();
-            $message = $gptApi->getMessage($data);
-            $content->setContent($message);
-            $em->persist($content);
-            $em->flush();
-            return $this->redirectToRoute('app_app');
-        }
+    {
+        /** @var $user */
+        $user = $this->getUser();
 
-        return $this->render('app/index.html.twig', [
-            'form' => $form,
-            'messages'=> $messages,
-        ]);
+        if ($user->isPaiement()){
+            $messages = $resultsRepository->findAll();
+            $content = new Results();
+            $form = $this->createForm(ProCreateType::class);
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()){
+                $data= $form->getData();
+                $message = $gptApi->getMessage($data);
+                $content->setContent($message);
+                $em->persist($content);
+                $em->flush();
+                return $this->redirectToRoute('app_app');
+            }
+            return $this->render('app/index.html.twig', [
+                'form' => $form,
+                'messages'=> $messages,
+            ]);
+        }
+        return $this->redirectToRoute('app_home_index');
     }
 }
